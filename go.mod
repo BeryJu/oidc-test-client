@@ -3,7 +3,6 @@ module github.com/BeryJu/oidc-test-client
 go 1.14
 
 require (
-	github.com/cenkalti/backoff/v4 v4.0.2
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/gorilla/securecookie v1.1.1
 	github.com/gorilla/sessions v1.2.1

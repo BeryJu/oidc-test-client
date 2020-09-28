@@ -26,12 +26,12 @@ type OIDCClient struct {
 	ctx context.Context
 }
 
-func NewOIDCClient(clientID string, clientSecret string, providerURL string) (*OIDCClient, error) {
+func NewOIDCClient(clientID string, clientSecret string, providerURL string) *OIDCClient {
 	ctx := context.Background()
 
 	provider, err := oidc.NewProvider(ctx, providerURL)
 	if err != nil {
-		return nil, err
+		log.Fatal(err)
 	}
 
 	rootURL := Env("OIDC_ROOT_URL", "http://localhost:9009")
@@ -53,7 +53,7 @@ func NewOIDCClient(clientID string, clientSecret string, providerURL string) (*O
 			ClientID: clientID,
 		}),
 	}
-	return &client, nil
+	return &client
 }
 
 func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
