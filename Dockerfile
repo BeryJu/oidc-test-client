@@ -7,6 +7,7 @@ ENV GOARCH=amd64
 RUN go build -v -o /go/bin/oidc-test-client
 
 FROM alpine
+RUN apk add --no-cache ca-certificates
 COPY --from=builder /go/bin/oidc-test-client /oidc-test-client
 EXPOSE 9009
 WORKDIR /web-root
