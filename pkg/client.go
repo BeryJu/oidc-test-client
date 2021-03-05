@@ -16,8 +16,10 @@ import (
 )
 
 type OIDCClient struct {
-	provider *oidc.Provider
-	verifier *oidc.IDTokenVerifier
+	provider    *oidc.Provider
+	providerURL string
+	verifier    *oidc.IDTokenVerifier
+	rootURL     string
 
 	config *oauth2.Config
 
@@ -45,10 +47,12 @@ func NewOIDCClient(clientID string, clientSecret string, providerURL string) *OI
 	}
 
 	client := OIDCClient{
-		config:   config,
-		ctx:      ctx,
-		provider: provider,
-		store:    sessions.NewCookieStore(securecookie.GenerateRandomKey(32)),
+		rootURL:     rootURL,
+		config:      config,
+		ctx:         ctx,
+		provider:    provider,
+		providerURL: providerURL,
+		store:       sessions.NewCookieStore(securecookie.GenerateRandomKey(32)),
 		verifier: provider.Verifier(&oidc.Config{
 			ClientID: clientID,
 		}),
@@ -149,9 +153,13 @@ func logRequest(handler http.Handler) http.Handler {
 
 func (c *OIDCClient) Run() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", c.oauthInit)
+	mux.HandleFunc("/implicit/", c.implicit)
+	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(static))))
 	mux.HandleFunc("/health", c.health)
+	// Just to prevent favicon from triggering authorize
+	mux.HandleFunc("/favicon.ico", c.health)
 	mux.HandleFunc("/auth/callback", c.oauthCallback)
+	mux.HandleFunc("/", c.oauthInit)
 
 	listen := Env("OIDC_BIND", "localhost:9009")
 

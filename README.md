@@ -14,6 +14,7 @@ This tool is full configured using environment variables.
 - `http://localhost:9009/health`: Healthcheck URL, used by the docker healtcheck.
 - `http://localhost:9009/auth/callback`: OAuth Callback URL
 - `http://localhost:9009/`: Test URL, initiated OAuth Code flow
+- `http://localhost:9009/implicit/`: Tests an Implicit OIDC flow using `id_token token`
 
 ## Configuration
 

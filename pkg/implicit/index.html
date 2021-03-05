@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>oidc-test-client - Implicit OAuth</title>
+    <script src="/static/implicit/oidc-client.min.js"></script>
+    <script>
+    Oidc.Log.logger = console;
+    Oidc.Log.level = Oidc.Log.INFO;
+    var settings = {
+        authority: '{{ .DiscoveryURL }}',
+        client_id: "{{ .ClientID }}",
+        redirect_uri: "{{ .RootURL }}/implicit/",
+        response_type: 'id_token token',
+        scope: 'openid profile',
+
+        filterProtocolClaims: true,
+        loadUserInfo: true
+    };
+    var mgr = new Oidc.UserManager(settings);
+
+    function redirectToLogin() {
+        mgr.signinRedirect({ state: 'some data' }).then(function () {
+            console.log("signinRedirect done");
+        }).catch(function (err) {
+            console.log(err);
+        });
+    }
+
+    function processLoginResponse() {
+        mgr.signinRedirectCallback().then(function (user) {
+            console.log("signed in", user);
+
+            document.getElementById("loginResult").innerText = JSON.stringify(user, null, 2);
+        }).catch(function (err) {
+            console.log(err);
+        });
+    }
+
+    if (window.location.href.indexOf("#") >= 0) {
+        processLoginResponse();
+    } else {
+        redirectToLogin();
+    }
+    </script>
+</head>
+<body>
+    <pre id="loginResult"></pre>
+</body>
+</html>
