@@ -18,14 +18,14 @@ This tool is full configured using environment variables.
 
 ## Configuration
 
-- `OIDC_BIND`: Which address and port to bind to. Defaults to `0.0.0.0:9009`.
-- `OIDC_CLIENT_ID`: OAuth2 Client ID to use
-- `OIDC_CLIENT_SECRET`: OAuth2 Client Secret to use
+- `OIDC_BIND`: Which address and port to bind to. (defaults `0.0.0.0:9009`).
+- `OIDC_CLIENT_ID`: OAuth2 Client ID to use.
+- `OIDC_CLIENT_SECRET`: OAuth2 Client Secret to use. Can be set to an empty string when only implicit flow is tested.
+- `OIDC_ROOT_URL`: URL under which you access this Client. (default http://localhost:9009)
 - `OIDC_PROVIDER`: Optional URL that metadata is fetched from. The metadata is fetched on the first request to `/`
-- `OIDC_ROOT_URL`: URL under which you access this Client.
-- `OIDC_DISABLE_REFRESH`: Disable refresh-token related checks (don't ask for a refresh token)
-- `OIDC_DISABLE_INTROSPECTION`: Disable introspection related checks (don't call introspection endpoint)
-- `OIDC_DISABLE_USER_INFO`: Disable user-info related checks (don't use userinfo endpoint)
+- `OIDC_DO_REFRESH`: Whether refresh-token related checks are enabled (don't ask for a refresh token) (default: true)
+- `OIDC_DO_INTROSPECTION`: Whether introspection related checks are enabled (don't call introspection endpoint) (default: true)
+- `OIDC_DO_USER_INFO`: Whether user-info related checks are enabled (don't use userinfo endpoint) (default: true)
 
 ## Running
 

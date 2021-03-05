@@ -62,9 +62,9 @@ func NewOIDCClient(clientID string, clientSecret string, providerURL string) *OI
 		verifier: provider.Verifier(&oidc.Config{
 			ClientID: clientID,
 		}),
-		doRefreshChecks:       strings.ToLower(Env("OIDC_DISABLE_REFRESH", "true")) == "true",
-		doIntrospectionChecks: strings.ToLower(Env("OIDC_DISABLE_INTROSPECTION", "true")) == "true",
-		doUserInfoChecks:      strings.ToLower(Env("OIDC_DISABLE_USER_INFO", "true")) == "true",
+		doRefreshChecks:       strings.ToLower(Env("OIDC_DO_REFRESH", "true")) == "true",
+		doIntrospectionChecks: strings.ToLower(Env("OIDC_DO_INTROSPECTION", "true")) == "true",
+		doUserInfoChecks:      strings.ToLower(Env("OIDC_DO_USER_INFO", "true")) == "true",
 	}
 	return &client
 }
