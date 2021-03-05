@@ -14,7 +14,7 @@
         client_id: "{{ .ClientID }}",
         redirect_uri: "{{ .RootURL }}/implicit/",
         response_type: 'id_token token',
-        scope: 'openid profile',
+        scope: 'openid profile email',
 
         filterProtocolClaims: true,
         loadUserInfo: true
