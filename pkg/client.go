@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	oidc "github.com/coreos/go-oidc"
 	"github.com/gorilla/securecookie"
@@ -102,15 +103,40 @@ func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// check refresh token
+
+	// force token expiry
+	oauth2Token.Expiry = time.Now()
+	ts := c.config.TokenSource(r.Context(), oauth2Token)
+	refresh, err := ts.Token()
+	if err != nil {
+		log.WithError(err).Warning("Failed to refresh token")
+	}
+
+	refreshRawIDToken, ok := refresh.Extra("id_token").(string)
+	if !ok {
+		log.Warning("No id_token field in refresh oauth2 token.")
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+	refreshIDToken, err := c.verifier.Verify(c.ctx, refreshRawIDToken)
+	if err != nil {
+		log.WithError(err).Warning("Failed to verify ID Token in refresh token")
+		http.Redirect(w, r, "/", http.StatusFound)
+		return
+	}
+
 	var uInfo interface{}
 	userInfo.Claims(&uInfo)
 
-	resp := struct {
-		OAuth2Token   *oauth2.Token
-		IDTokenClaims *json.RawMessage // ID Token payload is just JSON.
-		UserInfo      interface{}
-		Introspection interface{}
-	}{oauth2Token, new(json.RawMessage), uInfo, introspection}
+	resp := CallbackResponse{
+		OAuth2Token:    oauth2Token,
+		IDTokenClaims:  new(json.RawMessage),
+		UserInfo:       uInfo,
+		Introspection:  introspection,
+		Refresh:        refresh,
+		RefreshIDToken: refreshIDToken,
+	}
 
 	if err := idToken.Claims(&resp.IDTokenClaims); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
