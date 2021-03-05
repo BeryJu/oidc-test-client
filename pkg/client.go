@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	oidc "github.com/coreos/go-oidc"
@@ -25,6 +26,10 @@ type OIDCClient struct {
 	config *oauth2.Config
 
 	store *sessions.CookieStore
+
+	doRefreshChecks       bool
+	doIntrospectionChecks bool
+	doUserInfoChecks      bool
 
 	ctx context.Context
 }
@@ -57,6 +62,9 @@ func NewOIDCClient(clientID string, clientSecret string, providerURL string) *OI
 		verifier: provider.Verifier(&oidc.Config{
 			ClientID: clientID,
 		}),
+		doRefreshChecks:       strings.ToLower(Env("OIDC_DISABLE_REFRESH", "true")) == "true",
+		doIntrospectionChecks: strings.ToLower(Env("OIDC_DISABLE_INTROSPECTION", "true")) == "true",
+		doUserInfoChecks:      strings.ToLower(Env("OIDC_DISABLE_USER_INFO", "true")) == "true",
 	}
 	return &client
 }
@@ -78,12 +86,7 @@ func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tokenSource := oauth2.StaticTokenSource(oauth2Token)
-	userInfo, err := c.provider.UserInfo(c.ctx, tokenSource)
-	if err != nil {
-		log.WithError(err).Error("Failed to get userinfo")
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
+
 	rawIDToken, ok := oauth2Token.Extra("id_token").(string)
 	if !ok {
 		log.Error("No id_token field in oauth2 token.")
@@ -96,51 +99,67 @@ func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
 	}
-	introspection, err := c.oauthTokenIntrospection(tokenSource)
-	if err != nil {
-		log.WithError(err).Error("Failed to do token introspection")
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
-
-	// check refresh token
-
-	// force token expiry
-	oauth2Token.Expiry = time.Now()
-	ts := c.config.TokenSource(r.Context(), oauth2Token)
-	refresh, err := ts.Token()
-	if err != nil {
-		log.WithError(err).Warning("Failed to refresh token")
-	}
-
-	refreshRawIDToken, ok := refresh.Extra("id_token").(string)
-	if !ok {
-		log.Warning("No id_token field in refresh oauth2 token.")
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
-	refreshIDToken, err := c.verifier.Verify(c.ctx, refreshRawIDToken)
-	if err != nil {
-		log.WithError(err).Warning("Failed to verify ID Token in refresh token")
-		http.Redirect(w, r, "/", http.StatusFound)
-		return
-	}
-
-	var uInfo interface{}
-	userInfo.Claims(&uInfo)
 
 	resp := CallbackResponse{
-		OAuth2Token:    oauth2Token,
-		IDTokenClaims:  new(json.RawMessage),
-		UserInfo:       uInfo,
-		Introspection:  introspection,
-		Refresh:        refresh,
-		RefreshIDToken: refreshIDToken,
+		OAuth2Token:   oauth2Token,
+		IDTokenClaims: new(json.RawMessage),
 	}
 
 	if err := idToken.Claims(&resp.IDTokenClaims); err != nil {
+		log.WithError(err).Error("Failed to get claims from ID Token")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
+	}
+
+	// UserInfo Checks
+	if c.doUserInfoChecks {
+		userInfo, err := c.provider.UserInfo(c.ctx, tokenSource)
+		if err != nil {
+			log.WithError(err).Error("Failed to get userinfo")
+			http.Redirect(w, r, "/", http.StatusFound)
+			return
+		}
+
+		var uInfo interface{}
+		userInfo.Claims(&uInfo)
+		resp.UserInfo = uInfo
+	}
+
+	// Introspection checks
+	if c.doIntrospectionChecks {
+		introspection, err := c.oauthTokenIntrospection(tokenSource)
+		if err != nil {
+			log.WithError(err).Error("Failed to do token introspection")
+			http.Redirect(w, r, "/", http.StatusFound)
+			return
+		}
+		resp.Introspection = introspection
+	}
+
+	// check refresh token
+	if c.doRefreshChecks {
+		// force token expiry
+		oauth2Token.Expiry = time.Now()
+		ts := c.config.TokenSource(r.Context(), oauth2Token)
+		refresh, err := ts.Token()
+		if err != nil {
+			log.WithError(err).Warning("Failed to refresh token")
+		}
+
+		refreshRawIDToken, ok := refresh.Extra("id_token").(string)
+		if !ok {
+			log.Warning("No id_token field in refresh oauth2 token.")
+			http.Redirect(w, r, "/", http.StatusFound)
+			return
+		}
+		refreshIDToken, err := c.verifier.Verify(c.ctx, refreshRawIDToken)
+		if err != nil {
+			log.WithError(err).Warning("Failed to verify ID Token in refresh token")
+			http.Redirect(w, r, "/", http.StatusFound)
+			return
+		}
+		resp.Refresh = refresh
+		resp.RefreshIDToken = refreshIDToken
 	}
 
 	data, err := json.MarshalIndent(resp, "", "    ")

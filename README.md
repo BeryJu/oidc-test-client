@@ -23,6 +23,9 @@ This tool is full configured using environment variables.
 - `OIDC_CLIENT_SECRET`: OAuth2 Client Secret to use
 - `OIDC_PROVIDER`: Optional URL that metadata is fetched from. The metadata is fetched on the first request to `/`
 - `OIDC_ROOT_URL`: URL under which you access this Client.
+- `OIDC_DISABLE_REFRESH`: Disable refresh-token related checks (don't ask for a refresh token)
+- `OIDC_DISABLE_INTROSPECTION`: Disable introspection related checks (don't call introspection endpoint)
+- `OIDC_DISABLE_USER_INFO`: Disable user-info related checks (don't use userinfo endpoint)
 
 ## Running
 
