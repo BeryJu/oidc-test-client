@@ -1,5 +1,5 @@
 FROM golang:latest AS builder
-WORKDIR $GOPATH/src/github.com/BeryJu/oidc-test-client
+WORKDIR $GOPATH/src/beryju.org/oidc-test-client
 COPY . .
 ENV CGO_ENABLED=0
 ENV GOOS=linux

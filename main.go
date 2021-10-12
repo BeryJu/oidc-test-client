@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/BeryJu/oidc-test-client/pkg"
+	"beryju.org/oidc-test-client/pkg"
 
 	log "github.com/sirupsen/logrus"
 )
