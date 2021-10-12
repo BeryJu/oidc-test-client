@@ -1,6 +1,6 @@
 # OIDC-test-client
 
-![GitHub branch checks state](https://img.shields.io/github/checks-status/beryju/oidc-test-client/master?style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/beryju/oidc-test-client/ci-build?style=for-the-badge)
 
 This is a small, golang-based OIDC Client, to be used in End-to-end or other testing. It uses the github.com/coreos/go-oidc Library for the actual OIDC Logic.
 
@@ -31,13 +31,14 @@ This tool is full configured using environment variables.
 This service is intended to run in a docker container
 
 ```
-docker pull ghcr.io/beryju/oidc-test-client
+# beryju.org is a vanity URL for ghcr.io/beryju
+docker pull beryju.org/oidc-test-client
 docke run -d --rm \
     -p 9009:9009 \
     -e OIDC_CLIENT_ID=test-id \
     -e OIDC_CLIENT_SECRET=test-secret \
     -e OIDC_PROVIDER=http://id.beryju.org/... \
-    ghcr.io/beryju/oidc-test-client
+    beryju.org/oidc-test-client
 ```
 
 Or if you want to use docker-compose, use this in your `docker-compose.yaml`.
@@ -47,7 +48,7 @@ version: '3.5'
 
 services:
   oidc-test-client:
-    image: ghcr.io/beryju/oidc-test-client
+    image: beryju.org/oidc-test-client
     ports:
       - 9009:9009
     environment:
