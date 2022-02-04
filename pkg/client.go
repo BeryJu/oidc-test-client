@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -34,6 +35,14 @@ type OIDCClient struct {
 	ctx context.Context
 }
 
+func getScopes() []string {
+	scopes := []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess, "profile", "email"}
+	if es := os.Getenv("OIDC_SCOPES"); es != "" {
+		scopes = strings.Split(es, ",")
+	}
+	return scopes
+}
+
 func NewOIDCClient(clientID string, clientSecret string, providerURL string) *OIDCClient {
 	ctx := context.Background()
 
@@ -49,7 +58,7 @@ func NewOIDCClient(clientID string, clientSecret string, providerURL string) *OI
 		ClientSecret: clientSecret,
 		Endpoint:     provider.Endpoint(),
 		RedirectURL:  fmt.Sprintf("%s/auth/callback", rootURL),
-		Scopes:       []string{oidc.ScopeOpenID, oidc.ScopeOfflineAccess, "profile", "email"},
+		Scopes:       getScopes(),
 	}
 
 	client := OIDCClient{

@@ -5,6 +5,7 @@ import (
 	_ "embed"
 	"html/template"
 	"net/http"
+	"strings"
 )
 
 //go:embed implicit/index.html
@@ -17,6 +18,7 @@ type ImplicitTemplateContext struct {
 	ClientID     string
 	DiscoveryURL string
 	RootURL      string
+	Scopes       string
 }
 
 func (c *OIDCClient) implicit(w http.ResponseWriter, r *http.Request) {
@@ -30,6 +32,7 @@ func (c *OIDCClient) implicit(w http.ResponseWriter, r *http.Request) {
 		ClientID:     c.config.ClientID,
 		DiscoveryURL: c.providerURL,
 		RootURL:      c.rootURL,
+		Scopes:       strings.Join(getScopes(), " "),
 	}
 	tmpl.Execute(w, context)
 }
