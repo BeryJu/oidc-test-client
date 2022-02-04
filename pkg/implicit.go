@@ -6,6 +6,8 @@ import (
 	"html/template"
 	"net/http"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 //go:embed implicit/index.html
@@ -34,5 +36,8 @@ func (c *OIDCClient) implicit(w http.ResponseWriter, r *http.Request) {
 		RootURL:      c.rootURL,
 		Scopes:       strings.Join(getScopes(), " "),
 	}
-	tmpl.Execute(w, context)
+	err := tmpl.Execute(w, context)
+	if err != nil {
+		log.WithError(err).Error("failed to render implicit template")
+	}
 }

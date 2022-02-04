@@ -25,7 +25,10 @@ func (c *OIDCClient) oauthTokenIntrospection(tokenSource oauth2.TokenSource) (in
 		RevocationEndpoint    string `json:"revocation_endpoint"`
 		IntrospectionEndpoint string `json:"introspection_endpoint"`
 	}
-	c.provider.Claims(&ec)
+	err := c.provider.Claims(&ec)
+	if err != nil {
+		return nil, err
+	}
 
 	token, err := tokenSource.Token()
 	if err != nil {

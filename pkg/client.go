@@ -130,7 +130,10 @@ func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 		}
 
 		var uInfo interface{}
-		userInfo.Claims(&uInfo)
+		err = userInfo.Claims(&uInfo)
+		if err != nil {
+			log.WithError(err).Error("failed to get claims from userinfo")
+		}
 		resp.UserInfo = uInfo
 	}
 
@@ -173,10 +176,14 @@ func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 
 	data, err := json.MarshalIndent(resp, "", "    ")
 	if err != nil {
+		log.WithError(err).Error("failed to marshal response")
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	w.Write(data)
+	_, err = w.Write(data)
+	if err != nil {
+		log.WithError(err).Error("failed to write response")
+	}
 }
 
 func (c *OIDCClient) oauthInit(w http.ResponseWriter, r *http.Request) {
@@ -187,7 +194,11 @@ func (c *OIDCClient) oauthInit(w http.ResponseWriter, r *http.Request) {
 	session.Values["state"] = state
 	err := session.Save(r, w)
 	if err != nil {
-		w.Write([]byte(err.Error()))
+		log.WithError(err).Warning("failed to save session")
+		_, err = w.Write([]byte(err.Error()))
+		if err != nil {
+			log.WithError(err).Warning("failed to write error message during init")
+		}
 		return
 	}
 	http.Redirect(w, r, c.config.AuthCodeURL(state), http.StatusFound)
