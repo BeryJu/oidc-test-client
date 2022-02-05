@@ -26,6 +26,7 @@ This tool is full configured using environment variables.
 - `OIDC_DO_REFRESH`: Whether refresh-token related checks are enabled (don't ask for a refresh token) (default: true)
 - `OIDC_DO_INTROSPECTION`: Whether introspection related checks are enabled (don't call introspection endpoint) (default: true)
 - `OIDC_DO_USER_INFO`: Whether user-info related checks are enabled (don't use userinfo endpoint) (default: true)
+- `OIDC_TLS_VERIFY`: Whether to verify TLS certicates (set to "false" for self-signed) (default: true)
 
 ## Running
 

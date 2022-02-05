@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -33,6 +34,31 @@ type OIDCClient struct {
 	doUserInfoChecks      bool
 
 	ctx context.Context
+}
+
+func strToBool(str string) bool {
+	strbool := strings.ToLower(str)
+	if strbool == "true" {
+		return true
+	}
+	return false
+}
+
+func skipTLSVerify() bool {
+	tlsVerify := strings.ToLower(Env("OIDC_TLS_VERIFY", "true"))
+	return strToBool(tlsVerify)
+}
+
+func createContext() context.Context {
+	if skipTLSVerify() {
+		tr := &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
+		httpClient := &http.Client{Transport: tr}
+		return oidc.ClientContext(context.Background(), httpClient)
+	}
+
+	return context.Background()
 }
 
 func getScopes() []string {
@@ -152,7 +178,14 @@ func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 	if c.doRefreshChecks {
 		// force token expiry
 		oauth2Token.Expiry = time.Now()
-		ts := c.config.TokenSource(r.Context(), oauth2Token)
+
+		// skipping TLS verification can't be done with
+		// the request context so use the clients
+		tsctx := r.Context()
+		if skipTLSVerify() {
+			tsctx = c.ctx
+		}
+		ts := c.config.TokenSource(tsctx, oauth2Token)
 		refresh, err := ts.Token()
 		if err != nil {
 			log.WithError(err).Warning("Failed to refresh token")
