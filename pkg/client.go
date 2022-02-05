@@ -38,10 +38,7 @@ type OIDCClient struct {
 
 func strToBool(str string) bool {
 	strbool := strings.ToLower(str)
-	if strbool == "true" {
-		return true
-	}
-	return false
+	return strbool == "true"
 }
 
 func skipTLSVerify() bool {
@@ -49,16 +46,16 @@ func skipTLSVerify() bool {
 	return strToBool(tlsVerify)
 }
 
-func createContext() context.Context {
+func createContext(from context.Context) context.Context {
 	if skipTLSVerify() {
 		tr := &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}
 		httpClient := &http.Client{Transport: tr}
-		return oidc.ClientContext(context.Background(), httpClient)
+		return oidc.ClientContext(from, httpClient)
 	}
 
-	return context.Background()
+	return from
 }
 
 func getScopes() []string {
@@ -181,11 +178,7 @@ func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 
 		// skipping TLS verification can't be done with
 		// the request context so use the clients
-		tsctx := r.Context()
-		if skipTLSVerify() {
-			tsctx = c.ctx
-		}
-		ts := c.config.TokenSource(tsctx, oauth2Token)
+		ts := c.config.TokenSource(createContext(r.Context()), oauth2Token)
 		refresh, err := ts.Token()
 		if err != nil {
 			log.WithError(err).Warning("Failed to refresh token")
