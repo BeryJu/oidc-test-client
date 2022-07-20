@@ -40,7 +40,7 @@ jobs:
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build and push Docker images
-      uses: docker/build-push-action@v3.0.0
+      uses: docker/build-push-action@v3.1.0
       with:
         tags: ghcr.io/beryju/oidc-test-client:latest
         push: ${{ github.ref == 'refs/heads/master' }}
