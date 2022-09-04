@@ -2,46 +2,39 @@ name: ci-build
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-go@v3
-      with:
-        go-version: '1.17'
-    - name: Get dependencies
-      run: |
-        go mod download
-    - name: Lint
-      run: |
-        docker run \
-          --rm \
-          -v $(pwd):/app \
-          -w /app \
-          golangci/golangci-lint:v1.43 \
-          golangci-lint run -v --timeout 200s
-    - name: Build
-      run: |
-        go build -v .
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v2
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v2
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Build and push Docker images
-      uses: docker/build-push-action@v3.1.1
-      with:
-        tags: ghcr.io/beryju/oidc-test-client:latest
-        push: ${{ github.ref == 'refs/heads/master' }}
-        platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: "1.17"
+      - name: Get dependencies
+        run: |
+          go mod download
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+      - name: Build
+        run: |
+          go build -v .
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v3.1.1
+        with:
+          tags: ghcr.io/beryju/oidc-test-client:latest
+          push: ${{ github.ref == 'refs/heads/master' }}
+          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
