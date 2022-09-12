@@ -9,9 +9,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var Version string
+
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "oidc-test-client",
+	Version: Version,
 	Short: "A tool to test various OAuth/OIDC authentication flows",
 	Run: func(cmd *cobra.Command, args []string) {
 		clientID := os.Getenv("OIDC_CLIENT_ID")

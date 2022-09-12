@@ -3,6 +3,8 @@ name: ci-build
 on:
   push:
     branches: [master]
+    tags:
+      - "v*"
   pull_request:
     branches: [master]
 
@@ -13,28 +15,25 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v3
         with:
-          go-version: "1.17"
-      - name: Get dependencies
-        run: |
+          go-version: 1.18
+          cache: true
+      - run: |
           go mod download
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
-      - name: Build
-        run: |
+      - uses: golangci/golangci-lint-action@v3
+      - run: |
           go build -v .
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-buildx-action@v2
+      - uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push Docker images
-        uses: docker/build-push-action@v3.1.1
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+      - uses: goreleaser/goreleaser-action@v3.0.0
         with:
-          tags: ghcr.io/beryju/oidc-test-client:latest
-          push: ${{ github.ref == 'refs/heads/master' }}
-          platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+          version: latest
+          args: release --rm-dist
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
