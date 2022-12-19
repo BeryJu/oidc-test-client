@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cli/oauth/device"
+	"github.com/cli/oauth"
 	"github.com/spf13/cobra"
 )
 
@@ -22,15 +22,16 @@ var deviceCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		httpClient := http.DefaultClient
 
-		code, err := device.RequestCode(httpClient, deviceUrl, clientId, scopes)
-		if err != nil {
-			panic(err)
+		flow := &oauth.Flow{
+			Host: &oauth.Host{
+				DeviceCodeURL: deviceUrl,
+			},
+			ClientID:   clientId,
+			Scopes:     scopes,
+			HTTPClient: httpClient,
 		}
 
-		fmt.Printf("Copy code: %s\n", code.UserCode)
-		fmt.Printf("then open: %s\n", code.VerificationURI)
-
-		accessToken, err := device.PollToken(httpClient, codeUrl, clientId, code)
+		accessToken, err := flow.DeviceFlow()
 		if err != nil {
 			panic(err)
 		}
