@@ -3,7 +3,7 @@ module beryju.org/oidc-test-client
 go 1.16
 
 require (
-	github.com/cli/oauth v1.0.0
+	github.com/cli/oauth v1.0.1
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/gorilla/securecookie v1.1.1
