@@ -1,4 +1,4 @@
-module beryju.org/oidc-test-client
+module beryju.io/oidc-test-client
 
 go 1.16
 

@@ -1,6 +1,6 @@
 package main
 
-import "beryju.org/oidc-test-client/cmd"
+import "beryju.io/oidc-test-client/cmd"
 
 func main() {
 	cmd.Execute()

@@ -3,7 +3,7 @@ package cmd
 import (
 	"os"
 
-	"beryju.org/oidc-test-client/pkg"
+	"beryju.io/oidc-test-client/pkg"
 	"github.com/spf13/cobra"
 
 	log "github.com/sirupsen/logrus"
@@ -13,9 +13,9 @@ var Version string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
-	Use:   "oidc-test-client",
+	Use:     "oidc-test-client",
 	Version: Version,
-	Short: "A tool to test various OAuth/OIDC authentication flows",
+	Short:   "A tool to test various OAuth/OIDC authentication flows",
 	Run: func(cmd *cobra.Command, args []string) {
 		clientID := os.Getenv("OIDC_CLIENT_ID")
 		clientSecret := os.Getenv("OIDC_CLIENT_SECRET")

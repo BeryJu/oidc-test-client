@@ -34,13 +34,13 @@ This service is intended to run in a docker container
 
 ```
 # beryju.org is a vanity URL for ghcr.io/beryju
-docker pull beryju.org/oidc-test-client
+docker pull ghcr.io/beryju/oidc-test-client:
 docke run -d --rm \
     -p 9009:9009 \
     -e OIDC_CLIENT_ID=test-id \
     -e OIDC_CLIENT_SECRET=test-secret \
-    -e OIDC_PROVIDER=http://id.beryju.org/... \
-    beryju.org/oidc-test-client
+    -e OIDC_PROVIDER=http://id.beryju.io/... \
+    ghcr.io/beryju/oidc-test-client:
 ```
 
 Or if you want to use docker-compose, use this in your `docker-compose.yaml`.
@@ -50,7 +50,7 @@ version: '3.5'
 
 services:
   oidc-test-client:
-    image: beryju.org/oidc-test-client
+    image: ghcr.io/beryju/oidc-test-client:
     ports:
       - 9009:9009
     environment:
