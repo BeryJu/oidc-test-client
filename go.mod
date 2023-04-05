@@ -9,7 +9,7 @@ require (
 	github.com/gorilla/sessions v1.2.1
 	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
 	github.com/sirupsen/logrus v1.9.0
-	github.com/spf13/cobra v1.6.1
+	github.com/spf13/cobra v1.7.0
 	golang.org/x/net v0.8.0
 	golang.org/x/oauth2 v0.6.0
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
