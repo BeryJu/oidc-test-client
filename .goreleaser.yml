@@ -87,5 +87,5 @@ brews:
       name: goreleaserbot
       email: goreleaser@beryju.org
     homepage: 'https://github.com/beryju/{{ .ProjectName }}'
-    description: 'A small, OIDC Client, to debug and test OIDC providers'
+    description: 'Small, OIDC Client, to debug and test OIDC providers'
     folder: Formula
