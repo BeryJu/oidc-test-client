@@ -1,6 +1,6 @@
 # OIDC-test-client
 
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/beryju/oidc-test-client/ci-build?style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/beryju/oidc-test-client/ci-build.yml?branch=master&style=for-the-badge)
 
 This is a small, golang-based OIDC Client, to be used in End-to-end or other testing. It uses the github.com/coreos/go-oidc Library for the actual OIDC Logic.
 
