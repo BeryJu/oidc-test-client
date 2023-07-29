@@ -21,6 +21,9 @@ This tool is full configured using environment variables.
 - `OIDC_CLIENT_ID`: OAuth2 Client ID to use.
 - `OIDC_CLIENT_SECRET`: OAuth2 Client Secret to use. Can be set to an empty string when only implicit flow is tested.
 - `OIDC_ROOT_URL`: URL under which you access this Client. (default http://localhost:9009)
+
+  When using in a subdirectory, make sure to leave out any trailing slashes
+
 - `OIDC_PROVIDER`: Optional URL that metadata is fetched from. The metadata is fetched on the first request to `/`
 - `OIDC_SCOPES`: Scopes to request from the provider. Defaults to "openid,offline_access,profile,email"
 - `OIDC_DO_REFRESH`: Whether refresh-token related checks are enabled (don't ask for a refresh token) (default: true)

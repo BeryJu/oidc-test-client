@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -243,14 +244,18 @@ func logRequest(handler http.Handler) http.Handler {
 }
 
 func (c *OIDCClient) Run() {
+	baseUrl, err := url.Parse(Env("OIDC_ROOT_URL", "http://localhost:9009"))
+	if err != nil {
+		panic(err)
+	}
 	mux := http.NewServeMux()
-	mux.HandleFunc("/implicit/", c.implicit)
-	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.FS(static))))
-	mux.HandleFunc("/health", c.health)
+	mux.HandleFunc(baseUrl.Path+"/implicit/", c.implicit)
+	mux.Handle(baseUrl.Path+"/static/", http.StripPrefix("/static/", http.FileServer(http.FS(static))))
+	mux.HandleFunc(baseUrl.Path+"/health", c.health)
 	// Just to prevent favicon from triggering authorize
-	mux.HandleFunc("/favicon.ico", c.health)
-	mux.HandleFunc("/auth/callback", c.oauthCallback)
-	mux.HandleFunc("/", c.oauthInit)
+	mux.HandleFunc(baseUrl.Path+"/favicon.ico", c.health)
+	mux.HandleFunc(baseUrl.Path+"/auth/callback", c.oauthCallback)
+	mux.HandleFunc(baseUrl.Path+"/", c.oauthInit)
 
 	listen := Env("OIDC_BIND", "localhost:9009")
 
