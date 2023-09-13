@@ -18,5 +18,8 @@ jobs:
       - run: |
           go mod download
       - uses: golangci/golangci-lint-action@v3
+        with:
+          args: --timeout 5000s --verbose
+          skip-cache: true
       - run: |
           go build -v .
