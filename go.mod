@@ -5,8 +5,8 @@ go 1.20
 require (
 	github.com/cli/oauth v1.0.1
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/gorilla/securecookie v1.1.1
-	github.com/gorilla/sessions v1.2.1
+	github.com/gorilla/securecookie v1.1.2
+	github.com/gorilla/sessions v1.2.2
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
 	golang.org/x/net v0.17.0
