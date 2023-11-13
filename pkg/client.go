@@ -44,7 +44,7 @@ func strToBool(str string) bool {
 
 func skipTLSVerify() bool {
 	tlsVerify := strings.ToLower(Env("OIDC_TLS_VERIFY", "true"))
-	return strToBool(tlsVerify)
+	return !strToBool(tlsVerify)
 }
 
 func createContext(from context.Context) context.Context {
