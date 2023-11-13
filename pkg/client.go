@@ -68,7 +68,7 @@ func getScopes() []string {
 }
 
 func NewOIDCClient(clientID string, clientSecret string, providerURL string) *OIDCClient {
-	ctx := context.Background()
+	ctx := createContext(context.Background())
 
 	provider, err := oidc.NewProvider(ctx, providerURL)
 	if err != nil {
