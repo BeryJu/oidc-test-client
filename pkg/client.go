@@ -44,7 +44,7 @@ func strToBool(str string) bool {
 
 func skipTLSVerify() bool {
 	tlsVerify := strings.ToLower(Env("OIDC_TLS_VERIFY", "true"))
-	return strToBool(tlsVerify)
+	return !strToBool(tlsVerify)
 }
 
 func createContext(from context.Context) context.Context {
@@ -68,7 +68,7 @@ func getScopes() []string {
 }
 
 func NewOIDCClient(clientID string, clientSecret string, providerURL string) *OIDCClient {
-	ctx := context.Background()
+	ctx := createContext(context.Background())
 
 	provider, err := oidc.NewProvider(ctx, providerURL)
 	if err != nil {
