@@ -1,4 +1,4 @@
-FROM docker.io/library/alpine:3.18.4
+FROM docker.io/library/alpine:3.18.5
 RUN apk add --no-cache ca-certificates
 COPY oidc-test-client /
 EXPOSE 9009
