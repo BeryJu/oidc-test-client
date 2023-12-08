@@ -1,5 +1,7 @@
-FROM docker.io/library/alpine:3.18.5
-RUN apk add --no-cache ca-certificates
+FROM docker.io/library/debian:12-slim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates && \
+    apt-get clean
 COPY oidc-test-client /
 EXPOSE 9009
 WORKDIR /web-root
