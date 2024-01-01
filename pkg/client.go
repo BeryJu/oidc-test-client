@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
@@ -228,7 +229,11 @@ func (c *OIDCClient) oauthInit(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
-	http.Redirect(w, r, c.config.AuthCodeURL(state), http.StatusFound)
+	opts := []oauth2.AuthCodeOption{}
+	if c.doRefreshChecks {
+		opts = append(opts, oauth2.AccessTypeOffline)
+	}
+	http.Redirect(w, r, c.config.AuthCodeURL(state, opts...), http.StatusFound)
 }
 
 func (c *OIDCClient) health(w http.ResponseWriter, r *http.Request) {

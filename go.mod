@@ -1,6 +1,6 @@
 module beryju.io/oidc-test-client
 
-go 1.20
+go 1.21
 
 require (
 	github.com/cli/oauth v1.0.1
