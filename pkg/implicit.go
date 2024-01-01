@@ -34,7 +34,15 @@ func (c *OIDCClient) implicit(w http.ResponseWriter, r *http.Request) {
 		ClientID:     c.config.ClientID,
 		DiscoveryURL: c.providerURL,
 		RootURL:      c.rootURL,
-		Scopes:       strings.Join(getScopes(), " "),
+		Scopes: strings.TrimSpace(
+			strings.ReplaceAll(
+				strings.Join(
+					getScopes(), " ",
+				),
+				"offline_access",
+				"",
+			),
+		),
 	}
 	err := tmpl.Execute(w, context)
 	if err != nil {
