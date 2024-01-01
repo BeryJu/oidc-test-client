@@ -6,5 +6,5 @@ COPY oidc-test-client /
 EXPOSE 9009
 WORKDIR /web-root
 ENV OIDC_BIND=0.0.0.0:9009
-HEALTHCHECK --interval=5s --start-period=1s CMD [ "wget", "--spider", "http://localhost:9009/health" ]
+HEALTHCHECK --interval=5s --start-period=1s CMD [ "/oidc-test-client", "healthcheck" ]
 ENTRYPOINT [ "/oidc-test-client" ]
