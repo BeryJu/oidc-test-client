@@ -230,6 +230,9 @@ func (c *OIDCClient) oauthInit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	opts := []oauth2.AuthCodeOption{}
+	if slices.Contains(c.config.Scopes, "offline_access") {
+		opts = append(opts, oauth2.ApprovalForce)
+	}
 	if c.doRefreshChecks {
 		opts = append(opts, oauth2.AccessTypeOffline)
 	}
