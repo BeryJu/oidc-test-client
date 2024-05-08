@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/cli/oauth"
 	"github.com/spf13/cobra"
@@ -25,6 +26,7 @@ var deviceCmd = &cobra.Command{
 		flow := &oauth.Flow{
 			Host: &oauth.Host{
 				DeviceCodeURL: deviceUrl,
+				TokenURL:      codeUrl,
 			},
 			ClientID:   clientId,
 			Scopes:     scopes,
@@ -41,7 +43,7 @@ var deviceCmd = &cobra.Command{
 }
 
 func init() {
-	deviceCmd.PersistentFlags().StringVarP(&clientId, "client-id", "c", "", "Client ID")
+	deviceCmd.PersistentFlags().StringVarP(&clientId, "client-id", "c", os.Getenv("OIDC_CLIENT_ID"), "Client ID")
 	deviceCmd.PersistentFlags().StringVarP(&deviceUrl, "device-url", "d", "", "Device URL")
 	deviceCmd.PersistentFlags().StringVarP(&codeUrl, "code-url", "u", "", "Code URL")
 	deviceCmd.PersistentFlags().StringSliceVarP(&scopes, "scopes", "s", []string{}, "Scopes")

@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"embed"
-	_ "embed"
 	"html/template"
 	"net/http"
 	"strings"

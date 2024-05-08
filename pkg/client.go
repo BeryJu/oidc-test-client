@@ -137,6 +137,7 @@ func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 	resp := CallbackResponse{
 		OAuth2Token:   oauth2Token,
 		IDTokenClaims: new(json.RawMessage),
+		RawIDToken:    rawIDToken,
 	}
 
 	if err := idToken.Claims(&resp.IDTokenClaims); err != nil {
@@ -230,7 +231,7 @@ func (c *OIDCClient) oauthInit(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	opts := []oauth2.AuthCodeOption{}
-	if slices.Contains(c.config.Scopes, "offline_access") {
+	if slices.Contains(c.config.Scopes, oidc.ScopeOfflineAccess) {
 		opts = append(opts, oauth2.ApprovalForce)
 	}
 	if c.doRefreshChecks {

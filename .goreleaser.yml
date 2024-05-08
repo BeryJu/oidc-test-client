@@ -88,4 +88,4 @@ brews:
       email: goreleaser@beryju.org
     homepage: 'https://github.com/beryju/{{ .ProjectName }}'
     description: 'Small, OIDC Client, to debug and test OIDC providers'
-    folder: Formula
+    directory: Formula

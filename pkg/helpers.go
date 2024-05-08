@@ -18,6 +18,7 @@ func Env(key string, fallback string) string {
 type CallbackResponse struct {
 	OAuth2Token    *oauth2.Token
 	IDTokenClaims  *json.RawMessage // ID Token payload is just JSON.
+	RawIDToken     string
 	UserInfo       interface{}
 	Introspection  interface{}
 	Refresh        interface{}
