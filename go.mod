@@ -1,6 +1,7 @@
 module beryju.io/oidc-test-client
 
-go 1.21
+go 1.23
+
 toolchain go1.23.0
 
 require (
