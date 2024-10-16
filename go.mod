@@ -5,7 +5,7 @@ go 1.23
 toolchain go1.23.0
 
 require (
-	github.com/cli/oauth v1.1.1
+	github.com/cli/oauth v1.2.0
 	github.com/coreos/go-oidc/v3 v3.11.0
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.4.0
