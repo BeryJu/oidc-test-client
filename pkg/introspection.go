@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+
 	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 )
@@ -49,7 +51,12 @@ func (c *OIDCClient) oauthTokenIntrospection(tokenSource oauth2.TokenSource) (in
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		err := resp.Body.Close()
+		if err != nil {
+			log.WithError(err).Warning("failed to close body")
+		}
+	}()
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err

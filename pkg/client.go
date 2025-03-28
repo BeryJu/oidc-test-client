@@ -242,7 +242,7 @@ func (c *OIDCClient) oauthInit(w http.ResponseWriter, r *http.Request) {
 
 func (c *OIDCClient) health(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
-	fmt.Fprint(w, "hello :)")
+	_, _ = fmt.Fprint(w, "hello :)")
 }
 
 func logRequest(handler http.Handler) http.Handler {
