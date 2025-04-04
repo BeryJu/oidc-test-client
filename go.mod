@@ -1,12 +1,9 @@
 module beryju.io/oidc-test-client
 
 go 1.24.0
-
-toolchain go1.24.1
-
 require (
 	github.com/cli/oauth v1.2.0
-	github.com/coreos/go-oidc/v3 v3.13.0
+	github.com/coreos/go-oidc/v3 v3.14.1
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.4.0
 	github.com/sirupsen/logrus v1.9.3
