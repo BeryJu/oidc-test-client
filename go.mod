@@ -1,6 +1,7 @@
 module beryju.io/oidc-test-client
 
 go 1.24.0
+
 require (
 	github.com/cli/oauth v1.2.0
 	github.com/coreos/go-oidc/v3 v3.14.1
@@ -9,7 +10,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.9.1
 	golang.org/x/net v0.38.0
-	golang.org/x/oauth2 v0.28.0
+	golang.org/x/oauth2 v0.29.0
 )
 
 require (
