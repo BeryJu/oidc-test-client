@@ -1,0 +1,40 @@
+name: Deploy to Staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-tag:
+        description: Run release additional operations
+        name:
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure setup cliditas
+        uses: Creditas/nucleon-actions/actions/setup-cliditas@v2
+        with:
+          env: stg.creditas.io
+     
+      - name: Build image
+        run: cliditas build --push --cache-from latest --build-arg COMMIT_HASH=${GITHUB_SHA::7}
+  
+  deploy-to-stg:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure setup cliditas
+        uses: Creditas/nucleon-actions/actions/setup-cliditas@v2
+        with:
+          env: stg.creditas.io
+
+      - name: Deploy to Staging
+        run: cliditas deploy -f deploy/stg/app.yaml --channel master --diff --yes

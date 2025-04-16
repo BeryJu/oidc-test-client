@@ -1,0 +1,29 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: oidc-test-client
+  description: This is a small, golang-based OIDC Client, to be used in End-to-end or other testing. It uses the github.com/coreos/go-oidc Library for the actual OIDC Logic.
+  annotations:
+    github.com/project-slug: Creditas/oidc-test-client
+    backstage.io/techdocs-ref: dir:.
+    creditas.io/expose-type: internal
+    creditas.io/tribe: tribe-foundation
+    creditas.io/impact: Low
+    creditas.io/provider: Internal
+    creditas.io/language: Go
+    creditas.io/pcn: no
+    creditas.io/disaster-recovery: no
+  tags:
+    - service
+    - innersourcing
+  links:
+    - url: https://oidc-test-client.prod.creditas.io/
+      title: oidc-test-client Prod
+      icon: dashboard
+    - url: https://oidc-test-client.stg.creditas.io/
+      title: oidc-test-client Staging
+      icon: dashboard
+spec:
+  type: service
+  owner: tribe-foundation
+  lifecycle: experimental

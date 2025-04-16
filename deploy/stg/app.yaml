@@ -1,0 +1,21 @@
+---
+apiVersion: apps.creditas.io/v2alpha1
+kind: App
+metadata:
+  name: oidc-test-client
+spec:
+  processes:
+    web:
+      port: 9009
+      env:
+        - name: OIDC_CLIENT_ID
+          value: test-id
+        - name: OIDC_CLIENT_SECRET
+          value: test-secret
+        - name: OIDC_PROVIDER
+          value: https://auth-staging.creditas.com.br/.well-known/openid-configuration
+  routes:
+    _:
+      paths:
+      - path: /
+        process: web
