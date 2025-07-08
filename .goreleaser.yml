@@ -70,23 +70,28 @@ docker_manifests:
   - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv6
 archives:
 - id: raw
-  format: binary
+  formats: binary
   name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}'
 - id: tar
-  format: tar.gz
+  formats: tar.gz
   name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}'
 checksum:
   name_template: '{{ .ProjectName }}_{{ .Version }}_SHA256SUMS'
   algorithm: sha256
-brews:
-  - ids:
-      - raw
-    repository:
-      owner: beryju
-      name: homebrew-tap
-    commit_author:
-      name: goreleaserbot
-      email: goreleaser@beryju.org
-    homepage: 'https://github.com/beryju/{{ .ProjectName }}'
-    description: 'Small, OIDC Client, to debug and test OIDC providers'
-    directory: Formula
+homebrew_casks:
+- ids:
+    - raw
+  commit_author:
+    name: goreleaserbot
+    email: goreleaser@beryju.org
+  repository:
+    owner: beryju
+    name: homebrew-tap
+  homepage: 'https://github.com/beryju/{{ .ProjectName }}'
+  description: 'Small, OIDC Client, to debug and test OIDC providers'
+  hooks:
+    post:
+      install: |
+        if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
+          system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/{{ .ProjectName }}"]
+        end
