@@ -3,95 +3,95 @@ before:
   hooks:
     - go mod tidy
 builds:
-- binary: '{{ .ProjectName }}'
-  env:
-    - CGO_ENABLED=0
-  mod_timestamp: '{{ .CommitTimestamp }}'
-  flags:
-    - -trimpath
-  ldflags:
-    - '-s -w -X beryju.io/{{ .ProjectName }}/cmd.Version={{.Version}}'
-  targets:
-    - linux_arm_6
-    - linux_arm_7
-    - linux_arm64
-    - linux_amd64
-    - darwin_arm64
-    - darwin_amd64
-    - freebsd_arm64
-    - freebsd_amd64
-    - windows_arm64
-    - windows_amd64
+  - binary: "{{ .ProjectName }}"
+    env:
+      - CGO_ENABLED=0
+    mod_timestamp: "{{ .CommitTimestamp }}"
+    flags:
+      - -trimpath
+    ldflags:
+      - "-s -w -X beryju.io/{{ .ProjectName }}/cmd.Version={{.Version}}"
+    targets:
+      - linux_arm_6
+      - linux_arm_7
+      - linux_arm64
+      - linux_amd64
+      - darwin_arm64
+      - darwin_amd64
+      - freebsd_arm64
+      - freebsd_amd64
+      - windows_arm64
+      - windows_amd64
 dockers:
-- image_templates:
-  - "ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-amd64"
-  use: buildx
-  goarch: amd64
-  build_flag_templates:
-  - "--platform=linux/amd64"
-- image_templates:
-  - "ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-arm64v8"
-  use: buildx
-  goarch: arm64
-  build_flag_templates:
-  - "--platform=linux/arm64/v8"
-- image_templates:
-  - "ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv7"
-  use: buildx
-  goarch: arm
-  goarm: "7"
-  build_flag_templates:
-  - "--platform=linux/arm/v7"
-- image_templates:
-  - "ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv6"
-  use: buildx
-  goarch: arm
-  goarm: "6"
-  build_flag_templates:
-  - "--platform=linux/arm/v6"
+  - image_templates:
+      - "ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-amd64"
+    use: buildx
+    goarch: amd64
+    build_flag_templates:
+      - "--platform=linux/amd64"
+  - image_templates:
+      - "ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-arm64v8"
+    use: buildx
+    goarch: arm64
+    build_flag_templates:
+      - "--platform=linux/arm64/v8"
+  - image_templates:
+      - "ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv7"
+    use: buildx
+    goarch: arm
+    goarm: "7"
+    build_flag_templates:
+      - "--platform=linux/arm/v7"
+  - image_templates:
+      - "ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv6"
+    use: buildx
+    goarch: arm
+    goarm: "6"
+    build_flag_templates:
+      - "--platform=linux/arm/v6"
 docker_manifests:
-- name_template: ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}
-  image_templates:
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-amd64
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-arm64v8
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv7
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv6
-- name_template: ghcr.io/beryju/{{ .ProjectName }}:v{{ .Major }}
-  image_templates:
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-amd64
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-arm64v8
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv7
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv6
-- name_template: ghcr.io/beryju/{{ .ProjectName }}:latest
-  image_templates:
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-amd64
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-arm64v8
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv7
-  - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv6
+  - name_template: ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}
+    image_templates:
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-amd64
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-arm64v8
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv7
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv6
+  - name_template: ghcr.io/beryju/{{ .ProjectName }}:v{{ .Major }}
+    image_templates:
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-amd64
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-arm64v8
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv7
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv6
+  - name_template: ghcr.io/beryju/{{ .ProjectName }}:latest
+    image_templates:
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-amd64
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-arm64v8
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv7
+      - ghcr.io/beryju/{{ .ProjectName }}:{{ .Version }}-armv6
 archives:
-- id: raw
-  formats: binary
-  name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}'
-- id: tar
-  formats: tar.gz
-  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}'
+  - id: raw
+    formats: binary
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}"
+  - id: tar
+    formats: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}"
 checksum:
-  name_template: '{{ .ProjectName }}_{{ .Version }}_SHA256SUMS'
+  name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
   algorithm: sha256
 homebrew_casks:
-- ids:
-    - raw
-  commit_author:
-    name: goreleaserbot
-    email: goreleaser@beryju.org
-  repository:
-    owner: beryju
-    name: homebrew-tap
-  homepage: 'https://github.com/beryju/{{ .ProjectName }}'
-  description: 'Small, OIDC Client, to debug and test OIDC providers'
-  hooks:
-    post:
-      install: |
-        if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
-          system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/{{ .ProjectName }}"]
-        end
+  - ids:
+      - tar
+    commit_author:
+      name: goreleaserbot
+      email: goreleaser@beryju.org
+    repository:
+      owner: beryju
+      name: homebrew-tap
+    homepage: "https://github.com/beryju/{{ .ProjectName }}"
+    description: "Small, OIDC Client, to debug and test OIDC providers"
+    hooks:
+      post:
+        install: |
+          if system_command("/usr/bin/xattr", args: ["-h"]).exit_status == 0
+            system_command "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "#{staged_path}/{{ .ProjectName }}"]
+          end
