@@ -4,7 +4,7 @@ go 1.24.0
 
 require (
 	github.com/cli/oauth v1.2.0
-	github.com/coreos/go-oidc/v3 v3.16.0
+	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.4.0
 	github.com/sirupsen/logrus v1.9.3
