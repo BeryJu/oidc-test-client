@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"context"
 	"crypto/tls"
 	"encoding/base64"
 	"encoding/json"
@@ -16,8 +17,6 @@ import (
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	log "github.com/sirupsen/logrus"
-
-	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 )
 

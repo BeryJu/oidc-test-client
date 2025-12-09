@@ -1,6 +1,7 @@
 package pkg
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,8 +10,6 @@ import (
 	"strings"
 
 	log "github.com/sirupsen/logrus"
-
-	"golang.org/x/net/context"
 	"golang.org/x/oauth2"
 )
 
