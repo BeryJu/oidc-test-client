@@ -7,7 +7,7 @@ require (
 	github.com/coreos/go-oidc/v3 v3.17.0
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.4.0
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.9.4
 	github.com/spf13/cobra v1.10.2
 	golang.org/x/oauth2 v0.34.0
 )
