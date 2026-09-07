@@ -102,10 +102,14 @@ func NewOIDCClient(clientID string, clientSecret string, providerURL string) *OI
 	return &client
 }
 
+// stateSep separates the random state from the URL to return to afterwards.
+const stateSep = "|"
+
 func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 	session, _ := c.store.Get(r, "session-name")
 
-	if r.URL.Query().Get("state") != session.Values["state"] {
+	state := r.URL.Query().Get("state")
+	if state != session.Values["state"] {
 		log.Error("state did not match")
 		http.Redirect(w, r, "/", http.StatusFound)
 		return
@@ -202,6 +206,16 @@ func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 		resp.RefreshIDToken = refreshIDToken
 	}
 
+	// the URL we were asked for rides along in the state, see oauthInit
+	if _, returnTo, _ := strings.Cut(state, stateSep); returnTo != "" {
+		session.Values["authenticated"] = true
+		if err := session.Save(r, w); err != nil {
+			log.WithError(err).Warning("failed to save session")
+		}
+		http.Redirect(w, r, returnTo, http.StatusFound)
+		return
+	}
+
 	data, err := json.MarshalIndent(resp, "", "    ")
 	if err != nil {
 		log.WithError(err).Error("failed to marshal response")
@@ -218,7 +232,14 @@ func (c *OIDCClient) oauthInit(w http.ResponseWriter, r *http.Request) {
 	// Get a session. We're ignoring the error resulted from decoding an
 	// existing session: Get() always returns a session, even if empty.
 	session, _ := c.store.Get(r, "session-name")
+	if authed, _ := session.Values["authenticated"].(bool); authed {
+		// the catch-all handler would otherwise restart the login flow on the
+		// URL we just returned to, looping forever
+		_, _ = fmt.Fprintf(w, "authenticated, returned to %s", r.URL.RequestURI())
+		return
+	}
 	state := base64.RawStdEncoding.EncodeToString(securecookie.GenerateRandomKey(32))
+	state += stateSep + r.URL.RequestURI()
 	session.Values["state"] = state
 	err := session.Save(r, w)
 	if err != nil {
