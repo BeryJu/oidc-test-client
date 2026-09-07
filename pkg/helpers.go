@@ -23,4 +23,5 @@ type CallbackResponse struct {
 	Introspection  interface{}
 	Refresh        interface{}
 	RefreshIDToken interface{}
+	InitialURL     string
 }

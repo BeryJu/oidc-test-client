@@ -208,12 +208,7 @@ func (c *OIDCClient) oauthCallback(w http.ResponseWriter, r *http.Request) {
 
 	// the URL we were asked for rides along in the state, see oauthInit
 	if _, returnTo, _ := strings.Cut(state, stateSep); returnTo != "" {
-		session.Values["authenticated"] = true
-		if err := session.Save(r, w); err != nil {
-			log.WithError(err).Warning("failed to save session")
-		}
-		http.Redirect(w, r, returnTo, http.StatusFound)
-		return
+		resp.InitialURL = returnTo
 	}
 
 	data, err := json.MarshalIndent(resp, "", "    ")
