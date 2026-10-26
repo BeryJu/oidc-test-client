@@ -3,7 +3,7 @@ module beryju.io/oidc-test-client
 go 1.26.0
 
 require (
-	github.com/cli/oauth v1.2.2
+	github.com/cli/oauth v1.3.0
 	github.com/coreos/go-oidc/v3 v3.21.0
 	github.com/gorilla/securecookie v1.1.2
 	github.com/gorilla/sessions v1.4.0
@@ -13,8 +13,7 @@ require (
 )
 
 require (
-	github.com/cli/browser v1.0.0 // indirect
-	github.com/cli/safeexec v1.0.0 // indirect
+	github.com/cli/browser v1.3.0 // indirect
 	github.com/go-jose/go-jose/v4 v4.1.4 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.9 // indirect
